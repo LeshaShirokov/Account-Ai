@@ -1,0 +1,13 @@
+{
+  "name": "account-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Страница профиля на чистых HTML, CSS и JavaScript",
+  "scripts": {
+    "check": "for f in js/*.js; do node --check \"$f\" || exit 1; done",
+    "test": "node tests/profile.test.js"
+  },
+  "devDependencies": {
+    "jsdom": "^24.1.0"
+  }
+}

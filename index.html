@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Страница профиля пользователя: фото, ФИО, организация, контакты и социальные сети. Чистые HTML, CSS и JavaScript.">
+  <meta name="color-scheme" content="light dark">
+  <title>Профиль — Account-Ai</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/theme-init.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержимому</a>
+
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a class="brand" href="./" aria-label="Account-Ai — страница профиля">
+        <span class="brand__logo" aria-hidden="true">A</span>
+        <span class="brand__name">Account<span class="brand__accent">-Ai</span></span>
+      </a>
+      <button type="button" class="icon-btn" id="theme-toggle" aria-pressed="false" aria-label="Включить тёмную тему" title="Сменить тему">
+        <span class="icon-slot" data-icon="moon"></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="container main" tabindex="-1">
+    <noscript>
+      <p class="notice">Для работы страницы профиля включите JavaScript.</p>
+    </noscript>
+
+    <!-- Просмотр профиля -->
+    <section id="view-profile" class="view" aria-labelledby="profile-name">
+      <article class="card hero">
+        <div class="hero__cover" aria-hidden="true"></div>
+        <div class="hero__body">
+          <div class="avatar avatar--lg" id="profile-avatar"></div>
+          <div class="hero__info">
+            <h1 class="hero__name" id="profile-name">Профиль</h1>
+            <p class="hero__meta" id="profile-meta"></p>
+          </div>
+          <div class="hero__actions">
+            <button type="button" class="btn btn--primary" id="edit-btn">
+              <span class="icon-slot" data-icon="edit"></span>
+              <span>Редактировать</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <div class="grid">
+        <div class="grid__main">
+          <section class="card" aria-labelledby="about-title">
+            <h2 class="card__title" id="about-title">
+              <span class="icon-slot" data-icon="user"></span>О себе
+            </h2>
+            <div class="about" id="profile-about"></div>
+          </section>
+
+          <section class="card" aria-labelledby="contacts-title">
+            <h2 class="card__title" id="contacts-title">
+              <span class="icon-slot" data-icon="contact"></span>Контакты
+            </h2>
+            <dl class="info-list" id="profile-contacts"></dl>
+          </section>
+        </div>
+
+        <aside class="grid__side" aria-label="Дополнительно">
+          <section class="card" aria-labelledby="social-title">
+            <h2 class="card__title" id="social-title">
+              <span class="icon-slot" data-icon="link"></span>Социальные сети
+            </h2>
+            <ul class="social-list" id="profile-social"></ul>
+          </section>
+
+          <section class="card" aria-labelledby="data-title">
+            <h2 class="card__title" id="data-title">
+              <span class="icon-slot" data-icon="database"></span>Данные профиля
+            </h2>
+            <p class="muted small">Профиль хранится только в этом браузере (localStorage) и никуда не отправляется.</p>
+            <p class="muted small" id="profile-updated"></p>
+            <div class="action-list">
+              <button type="button" class="btn btn--secondary btn--block" id="export-btn">
+                <span class="icon-slot" data-icon="download"></span><span>Экспорт в JSON</span>
+              </button>
+              <button type="button" class="btn btn--secondary btn--block" id="import-btn">
+                <span class="icon-slot" data-icon="upload"></span><span>Импорт из JSON</span>
+              </button>
+              <input type="file" id="import-input" accept="application/json,.json" hidden>
+              <button type="button" class="btn btn--danger-ghost btn--block" id="reset-btn">
+                <span class="icon-slot" data-icon="reset"></span><span>Сбросить</span>
+              </button>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Редактирование профиля -->
+    <section id="view-edit" class="view" aria-labelledby="edit-title" hidden>
+      <form id="profile-form" class="card form" novalidate aria-describedby="form-note">
+        <div class="form__header">
+          <h1 class="form__title" id="edit-title" tabindex="-1">Редактирование профиля</h1>
+          <p class="muted small" id="form-note">Поля, отмеченные <span class="req" aria-hidden="true">*</span><span class="visually-hidden">звёздочкой</span>, обязательны для заполнения.</p>
+        </div>
+
+        <fieldset class="form__section">
+          <legend class="form__legend">Фото</legend>
+          <div class="photo-field">
+            <div class="avatar avatar--md" id="photo-preview"></div>
+            <div class="photo-field__body">
+              <div class="photo-field__actions">
+                <button type="button" class="btn btn--secondary" id="photo-pick" aria-describedby="photo-hint photo-error">
+                  <span class="icon-slot" data-icon="camera"></span><span>Загрузить фото</span>
+                </button>
+                <button type="button" class="btn btn--ghost" id="photo-remove">
+                  <span class="icon-slot" data-icon="trash"></span><span>Удалить фото</span>
+                </button>
+                <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
+              </div>
+              <p class="hint" id="photo-hint">JPG, PNG, WebP или GIF до 5 МБ. Фото обрезается до квадрата по центру и уменьшается до 512×512 px.</p>
+              <p class="field-error" id="photo-error" aria-live="polite"></p>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form__section">
+          <legend class="form__legend">Личные данные</legend>
+          <div class="form__grid">
+            <div class="field">
+              <label class="field__label" for="f-lastName">Фамилия <span class="req" aria-hidden="true">*</span></label>
+              <input class="input" id="f-lastName" name="lastName" type="text" autocomplete="family-name" maxlength="50" required aria-describedby="e-lastName">
+              <p class="field-error" id="e-lastName"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="f-firstName">Имя <span class="req" aria-hidden="true">*</span></label>
+              <input class="input" id="f-firstName" name="firstName" type="text" autocomplete="given-name" maxlength="50" required aria-describedby="e-firstName">
+              <p class="field-error" id="e-firstName"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="f-middleName">Отчество</label>
+              <input class="input" id="f-middleName" name="middleName" type="text" autocomplete="additional-name" maxlength="50" aria-describedby="e-middleName">
+              <p class="field-error" id="e-middleName"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="f-position">Должность</label>
+              <input class="input" id="f-position" name="position" type="text" autocomplete="organization-title" maxlength="80" aria-describedby="e-position">
+              <p class="field-error" id="e-position"></p>
+            </div>
+            <div class="field field--wide">
+              <label class="field__label" for="f-organization">Организация</label>
+              <input class="input" id="f-organization" name="organization" type="text" autocomplete="organization" maxlength="120" aria-describedby="e-organization">
+              <p class="field-error" id="e-organization"></p>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form__section">
+          <legend class="form__legend">Контакты</legend>
+          <div class="form__grid">
+            <div class="field">
+              <label class="field__label" for="f-phone">Телефон</label>
+              <input class="input" id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="24" placeholder="+7 (900) 123-45-67" aria-describedby="h-phone e-phone">
+              <p class="hint" id="h-phone">Российский номер, приводится к формату +7…</p>
+              <p class="field-error" id="e-phone"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="f-email">E-mail <span class="req" aria-hidden="true">*</span></label>
+              <input class="input" id="f-email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" required placeholder="name@example.com" aria-describedby="e-email">
+              <p class="field-error" id="e-email"></p>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form__section">
+          <legend class="form__legend">Социальные сети</legend>
+          <p class="hint">Только ссылки http:// и https://. Если протокол не указан, будет добавлен https://.</p>
+          <div class="form__grid">
+            <div class="field">
+              <label class="field__label" for="f-vk">ВКонтакте</label>
+              <div class="input-group"><span class="input-group__icon icon-slot" data-icon="vk"></span>
+                <input class="input" id="f-vk" name="social.vk" type="url" inputmode="url" maxlength="300" placeholder="https://vk.com/username" aria-describedby="e-vk"></div>
+              <p class="field-error" id="e-vk"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="f-telegram">Telegram</label>
+              <div class="input-group"><span class="input-group__icon icon-slot" data-icon="telegram"></span>
+                <input class="input" id="f-telegram" name="social.telegram" type="text" maxlength="300" autocapitalize="off" spellcheck="false" placeholder="@username или https://t.me/username" aria-describedby="e-telegram"></div>
+              <p class="field-error" id="e-telegram"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="f-github">GitHub</label>
+              <div class="input-group"><span class="input-group__icon icon-slot" data-icon="github"></span>
+                <input class="input" id="f-github" name="social.github" type="url" inputmode="url" maxlength="300" placeholder="https://github.com/username" aria-describedby="e-github"></div>
+              <p class="field-error" id="e-github"></p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="f-linkedin">LinkedIn</label>
+              <div class="input-group"><span class="input-group__icon icon-slot" data-icon="linkedin"></span>
+                <input class="input" id="f-linkedin" name="social.linkedin" type="url" inputmode="url" maxlength="300" placeholder="https://www.linkedin.com/in/username" aria-describedby="e-linkedin"></div>
+              <p class="field-error" id="e-linkedin"></p>
+            </div>
+            <div class="field field--wide">
+              <label class="field__label" for="f-website">Сайт</label>
+              <div class="input-group"><span class="input-group__icon icon-slot" data-icon="globe"></span>
+                <input class="input" id="f-website" name="social.website" type="url" inputmode="url" maxlength="300" placeholder="https://example.com" aria-describedby="e-website"></div>
+              <p class="field-error" id="e-website"></p>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form__section">
+          <legend class="form__legend">О себе</legend>
+          <div class="field">
+            <label class="field__label" for="f-about">Коротко о себе</label>
+            <textarea class="input textarea" id="f-about" name="about" rows="5" maxlength="600" aria-describedby="c-about e-about"></textarea>
+            <p class="hint hint--right" id="c-about">0 / 600</p>
+            <p class="field-error" id="e-about"></p>
+          </div>
+        </fieldset>
+
+        <div class="form__footer">
+          <button type="button" class="btn btn--ghost" id="cancel-btn">Отмена</button>
+          <button type="submit" class="btn btn--primary" id="save-btn">
+            <span class="icon-slot" data-icon="check"></span><span>Сохранить</span>
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <span>Account-Ai · вёрстка профиля на чистых HTML, CSS и JS</span>
+      <span>Данные хранятся локально</span>
+    </div>
+  </footer>
+
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-relevant="additions"></div>
+
+  <dialog class="dialog" id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-text">
+    <div class="dialog__body">
+      <h2 class="dialog__title" id="confirm-title">Подтверждение</h2>
+      <p class="dialog__text" id="confirm-text"></p>
+    </div>
+    <div class="dialog__actions">
+      <button type="button" class="btn btn--ghost" id="confirm-cancel">Отмена</button>
+      <button type="button" class="btn btn--primary" id="confirm-ok">ОК</button>
+    </div>
+  </dialog>
+
+  <script src="js/icons.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/photo.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
